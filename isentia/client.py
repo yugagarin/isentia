@@ -1,27 +1,41 @@
-import pymongo
+#!/usr/bin/python
 
-from scrapy.conf import settings
-from scrapy.exceptions import DropItem
-from scrapy import log
+import pymongo
+import traceback
+import logging
 import pprint
+import sys
 
 class MongoDBClient(object):
+	
+	def __init__(self):
+		connection = pymongo.MongoClient("mongodb://isentia:isentia@sl-aus-syd-1-portal.2.dblayer.com:15428,sl-aus-syd-1-portal.1.dblayer.com:15428/isentia?ssl=true",ssl_ca_certs="./cert.crt")
+		db = connection['isentia']
+		self.collection = db['media']
+	
+	def ix_information(self):
+		pprint.pprint(self.collection.index_information()) #get list of indexes
+	
+	def create_ft_index(self):
+		#create full text index 
+		pprint.pprint(self.collection.create_index([('text_body', 'text')], default_language='english')) 
+	
+	def query(self, term): 
+		qry={ '$text': { '$search': term}}
+		cur=self.collection.find(qry)
+		for doc in cur:
+			pprint.pprint(doc)
 
-    def __init__(self):
-        connection = pymongo.MongoClient("mongodb://isentia:isentia@sl-aus-syd-1-portal.2.dblayer.com:15428,sl-aus-syd-1-portal.1.dblayer.com:15428/isentia?ssl=true",
-            ssl_ca_certs="./cert.crt"
-        )
-        db = connection['isentia']
-        self.collection = db['media']
+def main():
+	try:
+		if (len(sys.argv)==1):
+			return
+		else:
+			client=MongoDBClient()
+			query=sys.argv[1]
+			client.query(query)
+	except:
+		logging.log(logging.CRITICAL,"Error in main:\n" + traceback.print_exc())
 
-    def query(self, term):
-        #pprint.pprint(self.collection.index_information())
-        #pprint.pprint(self.collection.create_index([('text_body', 'text')], default_language='english')) # 
-        qry={ '$text': { '$search': term}}
-        cur=self.collection.find(qry)
-        for doc in cur:
-            pprint.pprint(doc)
-
-
-client=MongoDBClient()
-client.query('coal')
+if __name__ == "__main__":
+    main()
