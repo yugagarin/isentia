@@ -14,13 +14,15 @@ class MongoDBClient(object):
 		self.collection = db['media']
 	
 	def ix_information(self):
+		""" Get list of indices """
 		pprint.pprint(self.collection.index_information()) #get list of indexes
 	
 	def create_ft_index(self):
-		#create full text index 
+		"""Create full text index on collection""" 
 		pprint.pprint(self.collection.create_index([('text_body', 'text')], default_language='english')) 
 	
 	def query(self, term): 
+		""" Queries the collection for a term in html body """
 		qry={ '$text': { '$search': term}}
 		cur=self.collection.find(qry)
 		for doc in cur:

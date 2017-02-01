@@ -5,7 +5,7 @@ from scrapy.exceptions import DropItem
 import logging
 
 class MongoDBPipeline(object):
-
+	""" Part of scrapy pipeline to write into mongodb database """
     def __init__(self):
         connection = pymongo.MongoClient(settings['MONGODB_URI'],ssl_ca_certs=settings['MONGODB_CERT'])
         db = connection[settings['MONGODB_DB']]

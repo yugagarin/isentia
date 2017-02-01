@@ -90,7 +90,8 @@ ROBOTSTXT_OBEY = True
 
 
 ITEM_PIPELINES = {'isentia.pipelines.MongoDBPipeline':100,}
+#mongodb connection URI
 MONGODB_URI = "mongodb://isentia:isentia@sl-aus-syd-1-portal.2.dblayer.com:15428,sl-aus-syd-1-portal.1.dblayer.com:15428/isentia?ssl=true"
-MONGODB_CERT= "./cert.crt"
+MONGODB_CERT= "./cert.crt" #cetificate for mongodb connection
 MONGODB_DB = "isentia"
 MONGODB_COLLECTION = "media"

@@ -1,3 +1,5 @@
+## response.xpath('//meta[@name="author"]').xpath('@content').extract() authot in the guardian 
+
 import logging
 import traceback
 
@@ -10,19 +12,18 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.item import Item, Field
 from scrapy.contrib.spiders import CrawlSpider, Rule
 
-#various web page parsing options 
+#various web page parsing tools 
 from readability import Document
 import html2text
 import lxml.etree
 import lxml.html
 
 class MyItem(Item):
+	""" Fields extracted from the web page """
 	text_body=scrapy.Field()
 	url=scrapy.Field()
 	author=scrapy.Field()
 	headline=scrapy.Field()
-
-
 
 class QuotesSpider(CrawlSpider):
     name = "isentia"
@@ -34,12 +35,12 @@ class QuotesSpider(CrawlSpider):
  
     def parse_item(self, response):
 		try:
-			#html2text parsing
+			#html2text parsing option
 			#h = html2text.HTML2Text()
 			#Ignore converting links from HTML
 			#h.ignore_links = True
 		
-			#lxml parsing
+			#lxml parsing option
 			#root = lxml.html.fromstring(response.body.decode('utf8'))
 			# optionally remove tags that are not usually rendered in browsers
 			# javascript, HTML/HEAD, comments, add the tag names you dont want at the end
@@ -51,7 +52,7 @@ class QuotesSpider(CrawlSpider):
 			#item['text_body'] = lxml.html.tostring(root, method="text", encoding=response.encoding)		
 			#item['text_body'] = h.handle(response.body.decode(response.encoding))
 			item['url'] = response.url
-			item['author']='' # response.xpath('//meta[@name="author"]').xpath('@content').extract()
+			item['author']='' 
 			item['headline']=doc.title()
 			return item
 		except:
